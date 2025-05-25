@@ -1,12 +1,13 @@
 // app.controller.spec.ts
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
+
 import { CreateTransacionsDTO } from './types/transaction.types';
+import { TransactionsService } from './services/transactions/transactions.service';
 
 describe('AppController', () => {
   let appController: AppController;
-  let appService: AppService;
+  let transactionsService: TransactionsService;
 
   beforeEach(async () => {
     const mockAppService = {
@@ -15,11 +16,12 @@ describe('AppController', () => {
 
     const moduleRef: TestingModule = await Test.createTestingModule({
       controllers: [AppController],
-      providers: [{ provide: AppService, useValue: mockAppService }],
+      providers: [{ provide: TransactionsService, useValue: mockAppService }],
     }).compile();
 
     appController = moduleRef.get<AppController>(AppController);
-    appService = moduleRef.get<AppService>(AppService);
+    transactionsService =
+      moduleRef.get<TransactionsService>(TransactionsService);
   });
 
   describe('uploadFile', () => {
@@ -37,12 +39,14 @@ describe('AppController', () => {
         invalidTransactions: 0,
       } as CreateTransacionsDTO;
       jest
-        .spyOn(appService, 'CreateTransacions')
+        .spyOn(transactionsService, 'CreateTransacions')
         .mockResolvedValue(expectedResult);
 
       const result = await appController.uploadFile(mockFile);
 
-      expect(appService.CreateTransacions).toHaveBeenCalledWith(mockFile);
+      expect(transactionsService.CreateTransacions).toHaveBeenCalledWith(
+        mockFile,
+      );
       expect(result).toEqual(expectedResult);
     });
   });

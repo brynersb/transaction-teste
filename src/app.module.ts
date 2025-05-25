@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { TransactionsService } from './services/transactions/transactions.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Transaction } from './infra/entities/transaction.entity';
 import { ValidTransactionRepository } from './infra/repositories/valid-transacions/valid-transaction.repository';
@@ -30,7 +30,6 @@ import { LoggerService } from './services/logger/logger.service';
       database: 'src/infra/db/database',
       entities: [Transaction, InvalidTransaction],
       synchronize: true,
-      logging: true,
     }),
     TypeOrmModule.forFeature([Transaction, InvalidTransaction]),
   ],
@@ -45,7 +44,7 @@ import { LoggerService } from './services/logger/logger.service';
       provide: 'InvalidTransactionRepositoryInterface',
       useClass: InvalidTransactionRepository,
     },
-    AppService,
+    TransactionsService,
     CreateTransacionsUsecaseProvider,
   ],
 })

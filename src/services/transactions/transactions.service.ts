@@ -1,10 +1,13 @@
 import { Inject, Injectable } from '@nestjs/common';
 import * as XLSX from 'xlsx';
-import { CreateTransacionsDTO, Transaction } from './types/transaction.types';
-import { CreateTransacionsUsecaseInterface } from './useCases/create-transactions-usecase.interface';
+import { CreateTransacionsUsecaseInterface } from '../../useCases/create-transactions-usecase.interface';
+import {
+  CreateTransacionsDTO,
+  Transaction,
+} from '../../types/transaction.types';
 
 @Injectable()
-export class AppService {
+export class TransactionsService {
   constructor(
     @Inject('CreateTransacionsUsecaseInterface')
     private readonly usecase: CreateTransacionsUsecaseInterface,

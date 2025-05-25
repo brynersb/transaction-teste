@@ -21,12 +21,21 @@ export class CreateTransacionsUsecase
     transactioins: Transaction[],
     fileName: string,
   ): Promise<CreateTransacionsDTO> {
+    this.loggerService.log(
+      `Start process bulk transactions, fileName: ${fileName}`,
+    );
     const validateResult = this.transactionValidation(transactioins, fileName);
     if (validateResult?.valid.length) {
+      this.loggerService.log(
+        `Total transactions valid:${validateResult.quantityValid}`,
+      );
       await this.validRepository.create(validateResult.valid);
     }
 
     if (validateResult?.invalid.length) {
+      this.loggerService.log(
+        `Total transactions invalid:${validateResult.quantityDuplicate + validateResult.quantityDuplicate}`,
+      );
       await this.invalidRepository.create(validateResult.invalid);
     }
 
@@ -44,7 +53,7 @@ export class CreateTransacionsUsecase
     fileName: string,
   ): ValidationResult {
     const count: Record<string, number> = {};
-
+    this.loggerService.log(`Start transactions validations`);
     for (const transaction of transactions) {
       const key = `${transaction.from}|${transaction.to}|${transaction.amount}`;
       count[key] = (count[key] || 0) + 1;
@@ -59,6 +68,9 @@ export class CreateTransacionsUsecase
       const key = `${transaction.from}|${transaction.to}|${transaction.amount}`;
 
       if (+transaction.amount < 0) {
+        this.loggerService.log(
+          `Transaction invalid ${JSON.stringify(transaction)}, reason: Nevative value`,
+        );
         invalid.push({
           ...transaction,
           reason: 'Nevative value',
@@ -66,6 +78,9 @@ export class CreateTransacionsUsecase
         });
         quantityNegative++;
       } else if (count[key] > 1) {
+        this.loggerService.log(
+          `Transaction invalid ${JSON.stringify(transaction)}, reason: Duplicate transaction`,
+        );
         invalid.push({
           ...transaction,
           reason: 'Duplicate',

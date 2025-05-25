@@ -4,16 +4,16 @@ import {
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
-import { AppService } from './app.service';
+import { TransactionsService } from './services/transactions/transactions.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(private readonly transactionsService: TransactionsService) {}
 
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(@UploadedFile() file: Express.Multer.File) {
-    return await this.appService.CreateTransacions(file);
+    return await this.transactionsService.CreateTransacions(file);
   }
 }
