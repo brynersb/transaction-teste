@@ -23,9 +23,7 @@ export class TransactionsService {
     const parsedToJson = XLSX.utils.sheet_to_json<Transaction>(
       sheets[sheetName[0]],
     );
-    if (!parsedToJson || !Array.isArray(parsedToJson)) {
-      throw new Error('Invalid file format or empty data');
-    }
+
     if (parsedToJson.length === 0) {
       throw new Error('No transactions found in the file');
     }
