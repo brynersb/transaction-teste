@@ -1,7 +1,7 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
-export class Transaction {
+export class InvalidTransaction {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -15,5 +15,8 @@ export class Transaction {
   amount: string;
 
   @Column()
-  suspect: boolean;
+  reason: string;
+
+  @Column()
+  fileName: string;
 }

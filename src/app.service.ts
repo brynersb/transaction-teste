@@ -1,35 +1,31 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { TransactionRepositoryInterface } from './infra/repositories/transaction.respotiroty.interface';
-import { TransactionEntity } from './infra/entities/transaction.entity';
 import * as XLSX from 'xlsx';
-import { TransactionCreate } from './types/transaction.types';
-import { TransactionRepository } from './infra/repositories/transaction.repository';
+import { CreateTransacionsDTO, Transaction } from './types/transaction.types';
+import { CreateTransacionsUsecaseInterface } from './useCases/create-transactions-usecase.interface';
 
 @Injectable()
 export class AppService {
   constructor(
-    @Inject(TransactionRepository)
-    private readonly repository: TransactionRepositoryInterface,
+    @Inject('CreateTransacionsUsecaseInterface')
+    private readonly usecase: CreateTransacionsUsecaseInterface,
   ) {}
 
   async CreateTransacions(
     file: Express.Multer.File,
-  ): Promise<TransactionEntity[]> {
+  ): Promise<CreateTransacionsDTO> {
     const workbook = XLSX.read(file.buffer, { type: 'buffer' });
     const sheets = workbook.Sheets;
     const sheetName = workbook.SheetNames;
 
-    const parsedToJson = XLSX.utils.sheet_to_json<TransactionCreate>(
+    const parsedToJson = XLSX.utils.sheet_to_json<Transaction>(
       sheets[sheetName[0]],
     );
-    console.log(`sem os negativos ${parsedToJson.length}`);
-    this.validationsRowsNegative(parsedToJson);
-    return await this.repository.create(parsedToJson);
-  }
-
-  validationsRowsNegative(data: TransactionCreate[]) {
-    const result = data.filter((e) => +e.amount > 0);
-    console.log(`sem os negativos${result.length}`);
-    return result;
+    if (!parsedToJson || !Array.isArray(parsedToJson)) {
+      throw new Error('Invalid file format or empty data');
+    }
+    if (parsedToJson.length === 0) {
+      throw new Error('No transactions found in the file');
+    }
+    return await this.usecase.execute(parsedToJson, file?.originalname);
   }
 }
