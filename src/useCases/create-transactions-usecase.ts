@@ -27,14 +27,14 @@ export class CreateTransacionsUsecase
     const validateResult = this.transactionValidation(transactioins, fileName);
     if (validateResult?.valid.length) {
       this.loggerService.log(
-        `Total transactions valid:${validateResult.quantityValid}`,
+        `Total valid transactions: ${validateResult.quantityValid}`,
       );
       await this.validRepository.create(validateResult.valid);
     }
 
     if (validateResult?.invalid.length) {
       this.loggerService.log(
-        `Total transactions invalid:${validateResult.quantityDuplicate + validateResult.quantityDuplicate}`,
+        `Total invalid transactions: ${validateResult.quantityDuplicate + validateResult.quantityDuplicate}`,
       );
       await this.invalidRepository.create(validateResult.invalid);
     }
