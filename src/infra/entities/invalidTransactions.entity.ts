@@ -19,4 +19,7 @@ export class InvalidTransaction {
 
   @Column()
   fileName: string;
+
+  @Column()
+  created_at: Date;
 }

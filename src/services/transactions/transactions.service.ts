@@ -20,9 +20,9 @@ export class TransactionsService {
     const sheets = workbook.Sheets;
     const sheetName = workbook.SheetNames;
 
-    const parsedToJson = XLSX.utils.sheet_to_json<Transaction>(
-      sheets[sheetName[0]],
-    );
+    const parsedToJson = XLSX.utils
+      .sheet_to_json<Transaction>(sheets[sheetName[0]])
+      .map((e) => ({ ...e, created_at: new Date() }));
 
     if (parsedToJson.length === 0) {
       throw new Error('No transactions found in the file');

@@ -27,7 +27,7 @@ import { LoggerService } from './services/logger/logger.service';
     }),
     TypeOrmModule.forRoot({
       type: 'sqlite',
-      database: 'src/infra/db/database',
+      database: 'src/infra/db/database.db',
       entities: [Transaction, InvalidTransaction],
       synchronize: true,
     }),

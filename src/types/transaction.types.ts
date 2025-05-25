@@ -3,6 +3,7 @@ export type Transaction = {
   to: string;
   amount: string;
   suspect?: boolean;
+  created_at: Date;
 };
 
 export type InvalidTransaction = {
@@ -11,6 +12,7 @@ export type InvalidTransaction = {
   amount: string;
   reason: 'Nevative value' | 'Duplicate';
   fileName?: string;
+  created_at: Date;
 };
 
 export type ValidationResult = {
