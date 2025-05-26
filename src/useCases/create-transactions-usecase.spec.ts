@@ -20,16 +20,27 @@ describe('CreateTransacionsUsecase', () => {
 
   it('should save only valid transactions', async () => {
     const transactions: Transaction[] = [
-      { from: 'A', to: 'B', amount: '100' },
-      { from: 'B', to: 'C', amount: '6000000' },
-      { from: 'A', to: 'B', amount: '100' },
-      { from: 'X', to: 'Y', amount: '-30' },
+      {
+        from: 'A',
+        to: 'B',
+        amount: '100',
+        created_at: new Date(),
+      },
+      { from: 'B', to: 'C', amount: '6000000', created_at: new Date() },
+      { from: 'A', to: 'B', amount: '100', created_at: new Date() },
+      { from: 'X', to: 'Y', amount: '-30', created_at: new Date() },
     ];
 
     const result = await usecase.execute(transactions, 'teste.csv');
 
     expect(mockValidRepo.create).toHaveBeenCalledWith([
-      { from: 'B', to: 'C', amount: '6000000', suspect: true },
+      {
+        from: 'B',
+        to: 'C',
+        amount: '6000000',
+        created_at: transactions[1].created_at,
+        suspect: true,
+      },
     ]);
     expect(mockInvalidRepo.create).toHaveBeenCalledWith(
       expect.arrayContaining([
@@ -45,8 +56,8 @@ describe('CreateTransacionsUsecase', () => {
 
   it('should return all as valid if no violations', async () => {
     const transactions: Transaction[] = [
-      { from: 'A', to: 'B', amount: '5000' },
-      { from: 'C', to: 'D', amount: '10000' },
+      { from: 'A', to: 'B', amount: '5000', created_at: new Date() },
+      { from: 'C', to: 'D', amount: '10000', created_at: new Date() },
     ];
 
     const result = await usecase.execute(transactions, 'ok.csv');

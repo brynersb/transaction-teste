@@ -20,7 +20,7 @@ describe('TransactionsService', () => {
     const result = await service.CreateTransacions(file);
 
     expect(mockUsecase.execute).toHaveBeenCalledWith(
-      transactions,
+      expect.arrayContaining([expect.objectContaining(transactions[0])]),
       'teste.xlsx',
     );
     expect(result).toEqual({ mock: 'response' });

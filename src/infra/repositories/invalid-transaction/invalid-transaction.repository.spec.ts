@@ -23,6 +23,7 @@ describe('InvalidTransactionRepository', () => {
         amount: '1000',
         reason: 'Duplicate',
         fileName: 'test.xlsx',
+        created_at: new Date(),
       },
     ];
 

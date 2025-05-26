@@ -22,6 +22,7 @@ describe('ValidTransactionRepository', () => {
         to: 'Y',
         amount: '100_000',
         suspect: false,
+        created_at: new Date(),
       },
     ];
 
